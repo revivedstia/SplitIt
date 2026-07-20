@@ -1,27 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import {
-  FlatList,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/navigation';
+import MenuSwiper from '../components/MenuSwiper';
 
 type Debt = { id: string; name: string; amount: number; is_incoming: number };
 
-const MENU_ITEMS = ['Профиль', 'Мои финансы', 'Статистика'];
-const ITEM_HEIGHT = 60; // Фиксированная высота кнопки для свайпера
-
 export default function MainScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const db = useSQLiteContext(); //
+  const db = useSQLiteContext();
   const [debts, setDebts] = useState<Debt[]>([]);
-  const [activeIndex, setActiveIndex] = useState(1); // По умолчанию выбрано "Мои финансы"
 
   // Загрузка данных о долгах
   const loadDebts = async () => {
@@ -40,25 +26,6 @@ export default function MainScreen() {
 
   // Фильтруем тех, кто должен НАМ (is_incoming = 1)
   const incomingDebts = debts.filter((d) => d.is_incoming === 1);
-
-  // Отслеживаем свайп кнопок меню
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const yOffset = event.nativeEvent.contentOffset.y;
-    const index = Math.round(yOffset / ITEM_HEIGHT);
-    
-    if (index >= 0 && index < MENU_ITEMS.length) {
-      setActiveIndex(index);
-      
-      // Переключаем экраны при свайпе меню
-      if (index === 0) {
-        // Чтобы свайп не срабатывал мгновенно во время инерции, 
-        // переключаем экран с микро-задержкой после фиксации
-        setTimeout(() => navigation.navigate('Profile'), 200);
-      } else if (index === 2) {
-        setTimeout(() => navigation.navigate('Statistics'), 200);
-      }
-    }
-  };
 
   return (
     <View style={styles.screen}>
@@ -86,43 +53,8 @@ export default function MainScreen() {
         ))}
       </View>
 
-      {/* Интерактивный вертикальный свайпер кнопок (меню) */}
-      <View style={styles.navigationWrapper}>
-        <Text style={styles.arrow}>Δ</Text>
-        
-        <View style={styles.swiperContainer}>
-          {/* Рамка фокуса активного элемента */}
-          <View style={styles.activeIndicatorBox} />
-
-          <FlatList
-            data={MENU_ITEMS}
-            keyExtractor={(item) => item}
-            showsVerticalScrollIndicator={false}
-            snapToInterval={ITEM_HEIGHT} // Заставляет список ровно прилипать к кнопкам
-            decelerationRate="fast"
-            onScroll={handleScroll}
-            scrollEventThrottle={16}
-            initialScrollIndex={1} // Стартуем сразу со второй кнопки ("Мои финансы")
-            getItemLayout={(_, index) => ({
-              length: ITEM_HEIGHT,
-              offset: ITEM_HEIGHT * index,
-              index,
-            })}
-            renderItem={({ item, index }) => {
-              const isActive = index === activeIndex;
-              return (
-                <View style={[styles.menuItem, { height: ITEM_HEIGHT }]}>
-                  <Text style={[styles.menuText, isActive && styles.menuTextActive]}>
-                    {item}
-                  </Text>
-                </View>
-              );
-            }}
-          />
-        </View>
-
-        <Text style={styles.arrow}>∇</Text>
-      </View>
+      {/* Меню-свайпер вынесен в отдельный компонент */}
+      <MenuSwiper />
     </View>
   );
 }
@@ -170,43 +102,5 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: 'bold',
-  },
-  /* Стилизация свайп-барабана */
-  navigationWrapper: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  arrow: {
-    fontSize: 20,
-    color: '#000',
-    marginVertical: 4,
-  },
-  swiperContainer: {
-    height: ITEM_HEIGHT, // Видна строго одна кнопка за раз
-    width: '100%',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  activeIndicatorBox: {
-    position: 'absolute',
-    borderWidth: 2,
-    borderColor: '#000',
-    borderRadius: 12,
-    height: 50,
-    left: 0,
-    right: 0,
-    top: (ITEM_HEIGHT - 50) / 2,
-  },
-  menuItem: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  menuText: {
-    fontSize: 18,
-    color: '#aaa',
-  },
-  menuTextActive: {
-    color: '#000',
-    fontWeight: '600',
   },
 });
