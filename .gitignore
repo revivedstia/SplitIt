@@ -1,0 +1,36 @@
+# Python
+pycache/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+.env
+
+# Node / React
+node_modules/
+/frontend/build
+.pnp
+.pnp.js
+coverage/
+.env.local
+.env.development.local
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# IDEs and editors
+.icanhaztemplates
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
