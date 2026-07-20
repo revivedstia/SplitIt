@@ -33,9 +33,6 @@ app.add_middleware(
 )
 
 
-# app.include_router(users.router)
-# app.include_router(groups.router)
-# app.include_router(expenses.router)
 # Подключение роутеров
 app.include_router(auth.router, prefix="/api/auth", tags=["Аутентификация (Auth)"])
 app.include_router(groups.router, prefix="/api/groups", tags=["Группы (Groups)"])
