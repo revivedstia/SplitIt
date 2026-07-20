@@ -3,10 +3,11 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import MenuSwiper from '../components/MenuSwiper';
 
-type Debt = { id: string; name: string; amount: number; is_incoming: number };
+type Debt = { id: string; name: string; amount: number; is_incoming: boolean };
 
 export default function MainScreen() {
-  const db = useSQLiteContext();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const db = useSQLiteContext(); 
   const [debts, setDebts] = useState<Debt[]>([]);
 
   // Загрузка данных о долгах
@@ -19,13 +20,13 @@ export default function MainScreen() {
     loadDebts();
   }, [db]);
 
-  // Считаем общую сумму, которую МЫ задолжали (is_incoming = 0)
+  // Считаем общую сумму, которую МЫ задолжали 
   const totalOwed = debts
-    .filter((d) => d.is_incoming === 0)
+    .filter((d) => d.is_incoming === false)
     .reduce((sum, item) => sum + item.amount, 0);
 
-  // Фильтруем тех, кто должен НАМ (is_incoming = 1)
-  const incomingDebts = debts.filter((d) => d.is_incoming === 1);
+  // Фильтруем тех, кто должен НАМ
+  const incomingDebts = debts.filter((d) => d.is_incoming === true);
 
   return (
     <View style={styles.screen}>
