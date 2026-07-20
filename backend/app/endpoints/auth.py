@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from backend.app.schemas.users import UserRegisterRequest, UserResponse, UserLoginRequest, TokenResponse
+from app.schemas.users import UserRegisterRequest, UserResponse, UserLoginRequest, TokenResponse
 
 # router = APIRouter(prefix="/api/users", tags=["Users"])
 
@@ -12,18 +12,18 @@ from backend.app.schemas.users import UserRegisterRequest, UserResponse, UserLog
 
 router = APIRouter()
 
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED, summary="Регистрация нового пользователя")
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED, 
+             summary="Регистрация нового пользователя")
 async def register(payload: UserRegisterRequest):
     return {
-        "id": 1,
-        "username": payload.username,
-        "display_name": payload.display_name
+        "id": "123e4567-e89b-12d3-a456-426614174000",
+        "email": payload.email,
+        "username": payload.username
     }
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login", response_model=TokenResponse, summary="Вход в систему")
 async def login(payload: UserLoginRequest):
-    """Вход в систему"""
     return {
-        "access_token": "mock_jwt_token_for_sasha",
+        "access_token": "mock_jwt_token",
         "token_type": "bearer"
     }

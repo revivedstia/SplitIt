@@ -3,7 +3,7 @@ from typing import Optional
 
 class UserRegisterRequest(BaseModel):
     """Валидация формы регистрации"""
-    email: EmailStr = Field(..., examples="anna_k@gmail.com")
+    email: EmailStr = Field(..., examples=["anna_k@gmail.com"])
     username: str = Field(..., examples=["anna_k"])
     password: str = Field(..., examples=["supersecretpassword"])
 
@@ -15,7 +15,7 @@ class UserResponse(BaseModel):
 
 class UserLoginRequest(BaseModel):
     """Валидация авторизации"""
-    email: EmailStr = Field(..., examples="anna_k@gmail.com")
+    email: EmailStr = Field(..., examples=["anna_k@gmail.com"])
     password: str = Field(..., examples=["supersecretpassword"])
 
 class TokenResponse(BaseModel):
