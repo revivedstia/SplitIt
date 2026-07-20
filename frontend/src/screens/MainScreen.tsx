@@ -12,14 +12,14 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 
-type Debt = { id: string; name: string; amount: number; is_incoming: number };
+type Debt = { id: string; name: string; amount: number; is_incoming: boolean };
 
 const MENU_ITEMS = ['Профиль', 'Мои финансы', 'Статистика'];
 const ITEM_HEIGHT = 60; // Фиксированная высота кнопки для свайпера
 
 export default function MainScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const db = useSQLiteContext(); //
+  const db = useSQLiteContext(); 
   const [debts, setDebts] = useState<Debt[]>([]);
   const [activeIndex, setActiveIndex] = useState(1); // По умолчанию выбрано "Мои финансы"
 
@@ -33,13 +33,13 @@ export default function MainScreen() {
     loadDebts();
   }, [db]);
 
-  // Считаем общую сумму, которую МЫ задолжали (is_incoming = 0)
+  // Считаем общую сумму, которую МЫ задолжали 
   const totalOwed = debts
-    .filter((d) => d.is_incoming === 0)
+    .filter((d) => d.is_incoming === false)
     .reduce((sum, item) => sum + item.amount, 0);
 
-  // Фильтруем тех, кто должен НАМ (is_incoming = 1)
-  const incomingDebts = debts.filter((d) => d.is_incoming === 1);
+  // Фильтруем тех, кто должен НАМ
+  const incomingDebts = debts.filter((d) => d.is_incoming === true);
 
   // Отслеживаем свайп кнопок меню
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {

@@ -22,7 +22,7 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
       id TEXT PRIMARY KEY NOT NULL,
       name TEXT NOT NULL,
       amount INTEGER NOT NULL,
-      is_incoming INTEGER DEFAULT 0
+      is_incoming BOOLEAN DEFAULT 0
     );
   `);
 }
@@ -37,7 +37,7 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator 
             initialRouteName="Home" 
-            screenOptions={{ headerShown: false }} // Прячем системные заголовки
+            screenOptions={{ headerShown: false }}
           >
             <Stack.Screen name="Home" component={MainScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -51,5 +51,5 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' }, //[cite: 2]
+  container: { flex: 1, backgroundColor: '#fff' },
 });
